@@ -15,8 +15,9 @@ parser.add_argument('--template', type=str, required=True, help='template pdf pa
 parser.add_argument('--out_path', type=str, required=True, help='output path')
 parser.add_argument('--alignment', type=int, default=3, help='1 untuk kiri, 2 untuk tengah, 3 untuk kanan')
 parser.add_argument('--xy', type=str, required=True, help='Center x dan y dalam inci. misal: 5,2.3 (tanpa spasi)')
-parser.add_argument('--font_face', type=str, required=True, help='Jenis fonts')
-parser.add_argument('--font_size', type=int, required=True, help='Ukuran fonts')
+parser.add_argument('--font_face', type=str, default="Helvetica", help='Jenis fonts')
+parser.add_argument('--font_size', type=int, default="20", help='Ukuran fonts')
+parser.add_argument('--fullname_column', type=str, default="FULLNAME", help='Ukuran fonts')
 args = parser.parse_args()
 
 
@@ -60,8 +61,9 @@ x, y = map(float, args.xy.split(','))
 for peserta in data_peserta:
 
 	if peserta['certified'] == '1':
-		nama_peserta = peserta['FULLNAME']
-		print(nama_peserta)
+		nama_peserta = peserta[args.fullname_column]
+		
+		print("writing for: ", nama_peserta)
 
 		packet = io.BytesIO()
 		
@@ -92,7 +94,7 @@ for peserta in data_peserta:
 
 		hashed = encode(nama_peserta)
 		
-		print("output", hashed)
+		print("output filename: ", hashed)
 		
 		# finally, write "output" to a real file
 		outputStream = open(os.path.join(args.out_path, hashed + ".pdf"), "wb")

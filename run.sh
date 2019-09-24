@@ -5,4 +5,5 @@ python app.py \
 --align 3 \
 --xy 11,3.8 \
 --font_size 25 \
---font_face Helvetica
+--font_face Helvetica \
+--fullname_column FULLNAME
