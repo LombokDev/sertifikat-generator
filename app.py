@@ -60,44 +60,43 @@ x, y = map(float, args.xy.split(','))
 
 for peserta in data_peserta:
 
-	if peserta['certified'] == '1':
-		nama_peserta = peserta[args.fullname_column]
-		
-		print("writing for: ", nama_peserta)
+	nama_peserta = peserta[args.fullname_column]
+	
+	print("writing for: ", nama_peserta)
 
-		packet = io.BytesIO()
-		
+	packet = io.BytesIO()
+	
 
-		can = canvas.Canvas(packet, pagesize=letter)
-		can.setFont(args.font_face, args.font_size)
+	can = canvas.Canvas(packet, pagesize=letter)
+	can.setFont(args.font_face, args.font_size)
 
-		if args.alignment == 1: # rata kiri
-			can.drawString(x, y, nama_peserta)	
-		if args.alignment == 2: # rata tengah
-			can.drawCentredString(x, y, nama_peserta)	
-		if args.alignment == 3: # rata kanan
-			print(x,y, type(x), type(y))
-			can.drawRightString(x*inch, y*inch, nama_peserta)	
-		
-		can.save()
+	if args.alignment == 1: # rata kiri
+		can.drawString(x, y, nama_peserta)	
+	if args.alignment == 2: # rata tengah
+		can.drawCentredString(x, y, nama_peserta)	
+	if args.alignment == 3: # rata kanan
+		print(x,y, type(x), type(y))
+		can.drawRightString(x*inch, y*inch, nama_peserta)	
+	
+	can.save()
 
-		packet.seek(0)
-		new_pdf = PdfFileReader(packet)
+	packet.seek(0)
+	new_pdf = PdfFileReader(packet)
 
-		existing_pdf = PdfFileReader(open(args.template, "rb"))
+	existing_pdf = PdfFileReader(open(args.template, "rb"))
 
-		output = PdfFileWriter()
-		# add the "watermark" (which is the new pdf) on the existing page
-		page = existing_pdf.getPage(0)
-		page.mergePage(new_pdf.getPage(0))
-		output.addPage(page)
+	output = PdfFileWriter()
+	# add the "watermark" (which is the new pdf) on the existing page
+	page = existing_pdf.getPage(0)
+	page.mergePage(new_pdf.getPage(0))
+	output.addPage(page)
 
-		hashed = encode(nama_peserta)
-		
-		print("output filename: ", hashed)
-		
-		# finally, write "output" to a real file
-		outputStream = open(os.path.join(args.out_path, hashed + ".pdf"), "wb")
-		output.write(outputStream)
-		outputStream.close()
+	hashed = encode(nama_peserta)
+	
+	print("output filename: ", hashed)
+	
+	# finally, write "output" to a real file
+	outputStream = open(os.path.join(args.out_path, hashed + ".pdf"), "wb")
+	output.write(outputStream)
+	outputStream.close()
 
